@@ -2,10 +2,10 @@
 
 ###Question 1: Index-Value Matching###
 
-#Question#
+#######Question######
 Given an array of integers A, please find three indices i, j, k, such that i<j<k and A[i]<A[j]<A[k]. Assume that such indices exist.
 
-#Attemp 1#
+######Attempt 1######
 We start with our naive implementation below. We can iterate about all triples until we find a valid (i, j, k). In Haskell we don't use for loops, so 3 nested loops won't work. We could do nested folds though, but that would look pretty bad. The best way to do this is with a list comprehension. This will give us a list of all of valid triples. We then select the first one since we are guaranteed that there will be an answer. Do note, that since we are doing this on 3 variables about a list of size n that the complexity of this solution will be O(n^3) with our space complexity being O(1). This is far from ideal.
 
 ````haskell
@@ -15,7 +15,7 @@ findIndicesNaive a = [(i, j, k) | i <- indices, j <- indices, k <- indices, i < 
     where indices = [0..(V.length a)-1]
 ````
 
-#Attempt 2# 
+######Attempt 2######
 We don't need to check all possible pairs. Instead we could iterate through our list. Let our position at any given step in this iteration correspond to the index j. At any given index j, we can just search to our left for an index i that meets the conditions and an index k to the right that meets the conditions. This solution would ultimately be O(n^2) because within our initial pass through the array, we make an additional pass each time between searching for a valid i and k.
 
 ````haskell
@@ -40,7 +40,7 @@ findK a indices j = L.filter (\k -> (a ! j) < (a ! k)) ks
     where ks = L.drop (j + 1) indices
 ````
 
-#Attempt 3#
+######Attempt 3######
 We can do even better though. For each A[j] we need to know the smallest value to the left of j, as well as the largest value to the right of j. Let us create arrays B and C where B[j] is the index of the smallest element to the left of j in A and C[j] is the index of the largest element to the right of j. We can build these two arrays in two separate passes of A. We simply iterate and keep a running log of the index of the smallest (or largest) element to the left and update it as we iterate. Finally, we can now iterate once through A and check at each index if we have a valid i or k in B and C as we go. We never make any nested passes and so our solution is O(n).
 
 ````haskell
